@@ -1,5 +1,7 @@
 package Action::Retry::Strategy::Linear;
 
+# ABSTRACT: Linear incrementation of sleep time strategy
+
 use namespace::autoclean;
 use Moo;
 

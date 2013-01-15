@@ -1,5 +1,7 @@
 package Action::Retry;
 
+# ABSTRACT: Module to try to perform an action, with various ways of retrying and sleeping between retries.
+
 use Module::Runtime qw(use_module);
 use Scalar::Util qw(blessed);
 use Time::HiRes qw( usleep );
@@ -154,11 +156,11 @@ sub run {
         $self->retry_if_code($error, @attempt_result)
           or return @attempt_result;
 
-        if ($self->strategy->needs_to_retry) {
-            usleep($self->strategy->next_sleep_time);
-        } else {
-            $self->on_failure_code($@, @attempt_result)
-        }
+        $self->strategy->needs_to_retry
+          or return $self->on_failure_code($@, @attempt_result);
+
+        usleep($self->strategy->sleep_time);
+        $self->strategy->next_step;
     }
 }
 

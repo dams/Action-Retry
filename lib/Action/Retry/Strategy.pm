@@ -1,5 +1,7 @@
 package Action::Retry::Strategy;
 
+# ABSTRACT: Srategy role that any Action::Retry strategy should consume
+
 use namespace::autoclean;
 use Moo::Role;
 
