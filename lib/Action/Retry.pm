@@ -9,6 +9,17 @@ use Time::HiRes qw( usleep );
 use namespace::autoclean;
 use Moo;
 
+=head1 SYNOPSIS
+
+  use Action::Retry;
+  my $action = Action::Retry->new(
+    attempt_code => sub { ... },
+    strategy => 'Linear',
+  );
+  $action->run();
+
+=cut
+
 =attr attempt_code
 
   ro, CodeRef, required
@@ -51,16 +62,16 @@ has retry_if_code => (
 
 =attr on_failure_code
 
-  ro, CodeRef, required
+  ro, CodeRef, optional
 
-The code to run when retries are given up.
+If given, the code to run when retries are given up.
 
 =cut
 
 has on_failure_code => (
     is => 'ro',
-    required => 1,
     isa => sub { ref $_[0] eq 'CODE' },
+    predicate => 1,
 );
 
 =attr strategy
@@ -153,11 +164,14 @@ sub run {
             @attempt_result = $scalar_result;
         }
 
-        $self->retry_if_code($error, @attempt_result)
+        $self->retry_if_code->($error, @attempt_result)
           or return @attempt_result;
 
-        $self->strategy->needs_to_retry
-          or return $self->on_failure_code($@, @attempt_result);
+        if (! $self->strategy->needs_to_retry) {
+            $self->has_on_failure_code
+              and return $self->on_failure_code->($@, @attempt_result);
+            return;
+        }
 
         usleep($self->strategy->sleep_time);
         $self->strategy->next_step;

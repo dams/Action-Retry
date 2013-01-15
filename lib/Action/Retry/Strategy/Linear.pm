@@ -34,7 +34,6 @@ has _current_sleep_time => (
     default => sub { $_[0]->initial_sleep_time },
     init_arg => undef,
     clearer => 1,
-    handles => [ qw(sleep_time) ],
 );
 
 =attr multiplicator
@@ -82,6 +81,10 @@ sub reset {
     return;
 };
 
+sub sleep_time {
+    my ($self) = @_;
+    return $self->_current_sleep_time;
+}
 sub next_step {
     my ($self) = @_;
     $self->_current_sleep_time($self->_current_sleep_time * $self->multiplicator);
