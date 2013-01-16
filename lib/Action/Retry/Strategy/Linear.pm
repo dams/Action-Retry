@@ -12,6 +12,7 @@ To be used as strategy in L<Action::Retry>
 =cut
 
 with 'Action::Retry::Strategy';
+with 'Action::Retry::Strategy::HelperRole::RetriesLimit';
 
 =attr initial_sleep_time
 
@@ -51,33 +52,9 @@ has multiplicator => (
     default => sub { 2 },
 );
 
-=attr max_retries_number
-
-  ro, Int, defaults to 10
-
-The number of times we should retry before giving up
-
-=cut
-
-has max_retries_number => (
-    is => 'ro',
-    lazy => 1,
-    default => sub { 10 },
-);
-
-# the current number of retries
-has _current_retries_number => (
-    is => 'rw',
-    lazy => 1,
-    default => sub { 0 },
-    init_arg => undef,
-    clearer => 1,
-);
-
 sub reset {
     my ($self) = @_;
     $self->_clear_current_sleep_time;
-    $self->_clear_current_retries_number;
     return;
 };
 
@@ -88,13 +65,19 @@ sub sleep_time {
 sub next_step {
     my ($self) = @_;
     $self->_current_sleep_time($self->_current_sleep_time * $self->multiplicator);
-    $self->_current_retries_number($self->_current_retries_number + 1);
     return;
 };
 
-sub needs_to_retry {
-    my ($self) = @_;
-    return $self->_current_retries_number < $self->max_retries_number;
-}
+sub needs_to_retry { 1 }
+
+# Inherited from Action::Retry::Strategy::HelperRole::RetriesLimit
+
+=attr max_retries_number
+
+  ro, Int, defaults to 10
+
+The number of times we should retry before giving up
+
+=cut
 
 1;

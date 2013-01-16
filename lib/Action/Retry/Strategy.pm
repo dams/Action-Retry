@@ -6,8 +6,8 @@ use namespace::autoclean;
 use Moo::Role;
 
 requires 'needs_to_retry';
+requires 'sleep_time';
 requires 'next_step';
 requires 'reset';
-
 
 1;
