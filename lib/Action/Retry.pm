@@ -146,11 +146,11 @@ results back to the caller.
 sub run {
     my ($self) = @_;
 
-    $self->strategy->reset;
-
     while(1) {
         my $error;
         my @attempt_result;
+
+#        $self->sleep_code->($self->strategy->sleep_time);
 
         if (wantarray) {
             @attempt_result = eval { $self->attempt_code->() };
@@ -165,9 +165,10 @@ sub run {
         }
 
         $self->retry_if_code->($error, @attempt_result)
-          or return @attempt_result;
+          or $self->strategy->reset, return @attempt_result;
 
         if (! $self->strategy->needs_to_retry) {
+            $self->strategy->reset;
             $self->has_on_failure_code
               and return $self->on_failure_code->($@, @attempt_result);
             return;
@@ -175,6 +176,7 @@ sub run {
 
         usleep($self->strategy->sleep_time);
         $self->strategy->next_step;
+
     }
 }
 
