@@ -22,6 +22,7 @@ F(i-2) starting from 0,1.
 
 with 'Action::Retry::Strategy';
 with 'Action::Retry::Strategy::HelperRole::RetriesLimit';
+with 'Action::Retry::Strategy::HelperRole::SleepTimeLimit';
 
 =attr initial_term_index
 
@@ -71,6 +72,7 @@ sub reset {
 
 sub sleep_time {
     my ($self) = @_;
+#    print STDERR " -- sleep time is " . term($self->_current_term_index) * $self->multiplicator . "\n";
     return term($self->_current_term_index) * $self->multiplicator;
 }
 
@@ -89,6 +91,17 @@ sub needs_to_retry { 1 }
   ro, Int, defaults to 10
 
 The number of times we should retry before giving up
+
+=cut
+
+# Inherited from Action::Retry::Strategy::HelperRole::SleepTimeLimit
+
+=attr max_sleep_time
+
+  ro, Int|Undef, defaults to undef
+
+If Action::Retry is about to sleep more than this number ( in milliseconds ),
+stop retrying.
 
 =cut
 

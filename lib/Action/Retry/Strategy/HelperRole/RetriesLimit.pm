@@ -23,7 +23,9 @@ has _current_retries_number => (
 around needs_to_retry => sub {
     my $orig = shift;
     my $self = shift;
-    $orig->($self, reverse @_) && $self->_current_retries_number < $self->max_retries_number
+    defined $self->max_retries_number
+      or return $orig->($self, @_);
+    $orig->($self, @_) && $self->_current_retries_number < $self->max_retries_number
 };
 
 after next_step => sub {

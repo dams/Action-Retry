@@ -62,6 +62,7 @@ sub sleep_time {
     my ($self) = @_;
     return $self->_current_sleep_time;
 }
+
 sub next_step {
     my ($self) = @_;
     $self->_current_sleep_time($self->_current_sleep_time * $self->multiplicator);
@@ -74,9 +75,21 @@ sub needs_to_retry { 1 }
 
 =attr max_retries_number
 
-  ro, Int, defaults to 10
+  ro, Int|Undef, defaults to 10
 
-The number of times we should retry before giving up
+The number of times we should retry before giving up. If set to undef, will
+retry indefinitely
+
+=cut
+
+# Inherited from Action::Retry::Strategy::HelperRole::SleepTimeLimit
+
+=attr max_sleep_time
+
+  ro, Int|Undef, defaults to undef
+
+If Action::Retry is about to sleep more than this number ( in milliseconds ),
+stop retrying.
 
 =cut
 
