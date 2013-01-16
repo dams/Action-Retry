@@ -22,7 +22,7 @@ F(i-2) starting from 0,1.
 
 with 'Action::Retry::Strategy';
 with 'Action::Retry::Strategy::HelperRole::RetriesLimit';
-with 'Action::Retry::Strategy::HelperRole::SleepTimeLimit';
+with 'Action::Retry::Strategy::HelperRole::SleepTimeout';
 
 =attr initial_term_index
 
@@ -94,7 +94,7 @@ The number of times we should retry before giving up
 
 =cut
 
-# Inherited from Action::Retry::Strategy::HelperRole::SleepTimeLimit
+# Inherited from Action::Retry::Strategy::HelperRole::SleepTimeout
 
 =attr max_sleep_time
 

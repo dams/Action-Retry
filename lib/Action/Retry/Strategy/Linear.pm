@@ -13,6 +13,7 @@ To be used as strategy in L<Action::Retry>
 
 with 'Action::Retry::Strategy';
 with 'Action::Retry::Strategy::HelperRole::RetriesLimit';
+with 'Action::Retry::Strategy::HelperRole::SleepTimeout';
 
 =attr initial_sleep_time
 
@@ -82,7 +83,7 @@ retry indefinitely
 
 =cut
 
-# Inherited from Action::Retry::Strategy::HelperRole::SleepTimeLimit
+# Inherited from Action::Retry::Strategy::HelperRole::SleepTimeout
 
 =attr max_sleep_time
 

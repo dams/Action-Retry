@@ -1,4 +1,4 @@
-package Action::Retry::Strategy::HelperRole::SleepTimeLimit;
+package Action::Retry::Strategy::HelperRole::SleepTimeout;
 
 # ABSTRACT: Helper to be consumed by Action::Retry Strategies, to enable giving up retrying when the sleep_time is too big
 
