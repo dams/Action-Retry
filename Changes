@@ -1,2 +1,5 @@
 {{$NEXT}}
   * first implementation
+  * non-blocking mode
+  * fibonacci, linear mode
+  
