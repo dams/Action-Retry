@@ -4,7 +4,7 @@ package Action::Retry;
 
 use Module::Runtime qw(use_module);
 use Scalar::Util qw(blessed);
-use Time::HiRes qw( usleep );
+use Time::HiRes qw(usleep gettimeofday);
 
 use namespace::autoclean;
 use Moo;
@@ -110,6 +110,40 @@ has strategy => (
     isa => sub { $_[0]->does('Action::Retry::Strategy') or die 'Should consume the Action::Retry::Strategy role' },
 );
 
+=attr non_blocking
+
+  ro, defaults to 0
+
+If true, the instance will be in a pseudo non blocking mode. In this mode, the
+C<run()> function behaves a bit differently: instead of sleeping between
+retries, the C<run()> command will immediately return. Subsequent call to
+C<run()> will immediately return, until the time to sleep has been elapsed.
+This allows to do things like that:
+
+  my $action = Action::Retry( ... , non_blocking => 1 );
+  while (1) {
+    # if the action failed, it doesn't sleep
+    # next time it's called, it won't do anything until it's time to retry
+    $action->run();
+    # do something else while time goes on
+  }
+
+If you need a more advanced non blocking mode and callbacks, then look at L<AnyEvent::Retry>
+
+=cut
+
+has non_blocking => (
+    is => 'ro',
+    default => sub { 0 },
+);
+
+# For non blocking mode, store the timestamp after which we can retry
+has _needs_sleeping_until => (
+    is => 'rw',
+    default => sub { 0 },
+    init_arg => undef,
+);
+
 =method run
 
 Does the following:
@@ -147,11 +181,19 @@ sub run {
     my ($self) = @_;
 
     while(1) {
+
+        if (my $timestamp = $self->_needs_sleeping_until) {
+            # we can't retry until we have waited enough time 
+            my ($seconds, $microseconds) = gettimeofday;
+            $seconds * 1000 + int($microseconds / 1000) >= $timestamp
+              or return;
+            $self->_needs_sleeping_until(0);
+            $self->strategy->next_step;
+        }
+
         my $error;
         my @attempt_result;
-
-#        $self->sleep_code->($self->strategy->sleep_time);
-
+          
         if (wantarray) {
             @attempt_result = eval { $self->attempt_code->() };
             $error = $@;
@@ -174,10 +216,41 @@ sub run {
             return;
         }
 
-        usleep($self->strategy->sleep_time);
-        $self->strategy->next_step;
-
+        if ($self->non_blocking) {
+            my ($seconds, $microseconds) = gettimeofday;
+            $self->_needs_sleeping_until($seconds * 1000 + int($microseconds / 1000) + $self->strategy->sleep_time);
+        } else {
+            usleep($self->strategy->sleep_time * 1000);
+            $self->strategy->next_step;
+        }
     }
 }
+
+=head 1 SEE ALSO
+
+I created this module because the other related modules I found didn't exactly
+do what I wanted. Here is the list and why:
+
+=over
+
+=item L<Retry>
+
+No custom checking code. No retry strategies. Can't sleep under one second. No
+non-blocking mode. No custom failure code.
+
+=item L<Sub::Retry>
+
+No retry strategies. Can't sleep under one second. Retry code is
+passed the results of the attempt code, but not the exception. No non-blocking mode. No custom failure code.
+
+=item Attempt
+
+No custom checking code. Strange exception catching behavior. No retry strategies. No non-blocking mode. No custom failure code.
+
+=item AnyEvent::Retry
+
+Depends on AnyEvent, and Moose. Strategies are less flexibles, and they don't have sleep timeouts (only max tries).
+
+=cut
 
 1;
