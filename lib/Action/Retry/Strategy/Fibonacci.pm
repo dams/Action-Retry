@@ -68,9 +68,9 @@ sub reset {
     my ($self) = @_;
     $self->_clear_current_term_index;
     return;
-};
+}
 
-sub sleep_time {
+sub compute_sleep_time {
     my ($self) = @_;
 #    print STDERR " -- sleep time is " . term($self->_current_term_index) * $self->multiplicator . "\n";
     return term($self->_current_term_index) * $self->multiplicator;
@@ -80,7 +80,7 @@ sub next_step {
     my ($self) = @_;
     $self->_current_term_index($self->_current_term_index + 1);
     return;
-};
+}
 
 sub needs_to_retry { 1 }
 

@@ -16,7 +16,7 @@ around needs_to_retry => sub {
     my $self = shift;
     defined $self->max_sleep_time
       or return $orig->($self, @_);
-    $orig->($self, @_) && $self->sleep_time < $self->max_sleep_time
+    $orig->($self, @_) && $self->compute_sleep_time < $self->max_sleep_time
 };
 
 1;

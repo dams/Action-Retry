@@ -57,9 +57,9 @@ sub reset {
     my ($self) = @_;
     $self->_clear_current_sleep_time;
     return;
-};
+}
 
-sub sleep_time {
+sub compute_sleep_time {
     my ($self) = @_;
     return $self->_current_sleep_time;
 }
@@ -68,7 +68,7 @@ sub next_step {
     my ($self) = @_;
     $self->_current_sleep_time($self->_current_sleep_time * $self->multiplicator);
     return;
-};
+}
 
 sub needs_to_retry { 1 }
 
