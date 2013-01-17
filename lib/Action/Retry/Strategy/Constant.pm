@@ -18,7 +18,7 @@ with 'Action::Retry::Strategy::HelperRole::RetriesLimit';
 
   ro, Int, defaults to 1000
 
-The number of microseconds to wait between retries
+The number of milliseconds to wait between retries
 
 =cut
 

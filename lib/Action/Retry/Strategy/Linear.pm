@@ -19,7 +19,7 @@ with 'Action::Retry::Strategy::HelperRole::SleepTimeout';
 
   ro, Int, defaults to 1000
 
-The number of microseconds to wait for the first retry
+The number of milliseconds to wait for the first retry
 
 =cut
 
