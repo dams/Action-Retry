@@ -23,7 +23,6 @@ my $action = Action::Retry->new(
                             } },
 );
 
-use Modern::Perl;
 $action->run();
 $action->run();
 $action->run();
