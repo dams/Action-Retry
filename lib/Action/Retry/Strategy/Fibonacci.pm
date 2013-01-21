@@ -54,7 +54,7 @@ has _current_term_index => (
   ro, Int, defaults to 1000
 
 Number of milliseconds that will be multiplied by the fibonacci sequence term
-value. Defaults to 1000 ( 1 second)
+value. Defaults to 1000 ( 1 second )
 
 =cut
 

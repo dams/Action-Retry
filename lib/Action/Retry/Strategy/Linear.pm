@@ -17,7 +17,7 @@ with 'Action::Retry::Strategy::HelperRole::SleepTimeout';
 
 =attr initial_sleep_time
 
-  ro, Int, defaults to 1000
+  ro, Int, defaults to 1000 ( 1 second )
 
 The number of milliseconds to wait for the first retry
 

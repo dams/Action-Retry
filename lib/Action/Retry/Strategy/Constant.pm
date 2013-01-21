@@ -16,7 +16,7 @@ with 'Action::Retry::Strategy::HelperRole::RetriesLimit';
 
 =attr sleep_time
 
-  ro, Int, defaults to 1000
+  ro, Int, defaults to 1000 ( 1 second )
 
 The number of milliseconds to wait between retries
 
@@ -25,7 +25,7 @@ The number of milliseconds to wait between retries
 has sleep_time => (
     is => 'ro',
     lazy => 1,
-    default => sub { 100 },
+    default => sub { 1000 },
 );
 
 sub compute_sleep_time { $_[0]->sleep_time }
