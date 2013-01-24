@@ -18,7 +18,7 @@ use Test::Pretty;
 
 {
     my $var = 0;
-    retry { $var++; die "plop" }
+    retry { $var++; die "plop"; }
         strategy => { Fibonacci => { initial_term_index => 0, multiplicator => 10 } };
     is($var, 11);
 }
@@ -43,7 +43,7 @@ use Test::Pretty;
                                      multiplicator => 10,
                                      max_sleep_time => 200,
                                    } };
-    is($var, 11);
+    is($var, 9);
 }
 
 done_testing;

@@ -7,7 +7,10 @@ use Scalar::Util qw(blessed);
 use Time::HiRes qw(usleep gettimeofday);
 use Carp;
 
-use Sub::Exporter -setup => { exports => [ qw(retry) ] };
+use base 'Exporter';
+our @EXPORT_OK = qw(retry);
+# export by default if run from command line
+our @EXPORT = ((caller())[1] eq '-e' ? @EXPORT_OK : ());
 
 use namespace::autoclean;
 use Moo;
@@ -72,7 +75,7 @@ use Moo;
   $action->run();
 
   # functional way
-  retry { ...},
+  retry { ...}
     retry_if_code => sub { ... },
     strategy => { Fibonacci => { multiplicator => 2000,
                                  initial_term_index => 3,
@@ -319,6 +322,28 @@ sub retry (&;@) {
     my %args = @_;
     Action::Retry->new( attempt_code => $code, %args )->run();
 }
+
+=head1 SRATEGIES
+
+Here are the strategies currently included by default. Check their
+documentation for more details.
+
+=over
+
+=item L<Action::Retry::Strategy::Constant>
+
+Provides a simple constant sleep time strategy
+
+=item L<Action::Retry::Strategy::Fibonacci>
+
+Provides an incremental constant sleep time strategy following Fibonacci
+sequence
+
+=item L<Action::Retry::Strategy::Linear>
+
+Provides a linear incrementing sleep time strategy
+
+=back
 
 =head1 SEE ALSO
 
