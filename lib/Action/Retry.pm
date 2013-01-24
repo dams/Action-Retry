@@ -100,8 +100,6 @@ use Moo;
     # do something else while time goes on
   }
 
-  There is no functional way of doing that, for now.
-
 
 =cut
 
@@ -314,6 +312,18 @@ sub run {
         }
     }
 }
+
+=method retry
+
+  retry { ..code.. } some => 'arguments';
+
+Is equivalent to 
+
+  Action::Retry->new(attempt_code => sub { ..code.. }, some => arguments )->run();
+
+A functional interface, alternative to the OO interface.
+
+=cut
 
 sub retry (&;@) {
     my $code = shift;
