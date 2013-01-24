@@ -37,7 +37,7 @@ use Moo;
   $action->run();
 
   # functional interface
-  retry { ... }, strategy => 'Linear';
+  retry { ... } strategy => 'Linear';
 
 
 
@@ -51,7 +51,7 @@ use Moo;
   $action->run();
 
   # functional interface
-  retry { ... }, strategy => 'Fibonacci';
+  retry { ... } strategy => 'Fibonacci';
 
 
 

@@ -1,4 +1,4 @@
-use Action::Retry;
+use Action::Retry qw(retry);
 
 use strict;
 use warnings;
@@ -18,6 +18,13 @@ use Test::Pretty;
 
 {
     my $var = 0;
+    retry { $var++; die "plop" }
+        strategy => { Fibonacci => { initial_term_index => 0, multiplicator => 10 } };
+    is($var, 11);
+}
+
+{
+    my $var = 0;
     my $action = Action::Retry->new(
         attempt_code => sub { $var++; die "plop" },
         strategy => { Fibonacci => { initial_term_index => 0,
@@ -27,6 +34,16 @@ use Test::Pretty;
     );
     $action->run();
     is($var, 9);
+}
+
+{
+    my $var = 0;
+    retry { $var++; die "plop" }
+        strategy => { Fibonacci => { initial_term_index => 0,
+                                     multiplicator => 10,
+                                     max_sleep_time => 200,
+                                   } };
+    is($var, 11);
 }
 
 done_testing;
