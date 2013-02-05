@@ -10,7 +10,7 @@ use Test::Pretty;
     my $var = 0;
     my $action = Action::Retry->new(
         attempt_code => sub { $var++; die "plop" },
-        strategy => 'Constant',
+        strategy => { Constant => { sleep_time => 100 } },
     );
     $action->run();
     is($var, 11);
@@ -18,7 +18,7 @@ use Test::Pretty;
 
 {
     my $var = 0;
-    retry { $var++; die "plop" } strategy => 'Constant';
+    retry { $var++; die "plop" } strategy => { Constant => { sleep_time => 100 } };
     is($var, 11);    
 }
 
