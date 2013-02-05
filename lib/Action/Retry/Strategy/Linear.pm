@@ -78,8 +78,8 @@ sub needs_to_retry { 1 }
 
   ro, Int|Undef, defaults to 10
 
-The number of times we should retry before giving up. If set to undef, will
-retry indefinitely
+The number of times we should retry before giving up. If set to undef, never
+stop retrying.
 
 =cut
 
@@ -90,7 +90,7 @@ retry indefinitely
   ro, Int|Undef, defaults to undef
 
 If Action::Retry is about to sleep more than this number ( in milliseconds ),
-stop retrying.
+stop retrying. If set to undef, never stop retrying.
 
 =cut
 

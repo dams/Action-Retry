@@ -16,7 +16,7 @@ To be used as strategy in L<Action::Retry>
 =head1 DESCRIPTION
 
 Sleeps incrementally by following the Fibonacci sequence : F(i) = F(i-1) +
-F(i-2) starting from 0,1.
+F(i-2) starting from 0,1. By default F(0) = 0, F(1) = 1, F(2) = 1, F(3) = 2
 
 =cut
 
@@ -90,7 +90,7 @@ sub needs_to_retry { 1 }
 
   ro, Int, defaults to 10
 
-The number of times we should retry before giving up
+The number of times we should retry before giving up. If set to undef, never stop retrying
 
 =cut
 
@@ -101,7 +101,7 @@ The number of times we should retry before giving up
   ro, Int|Undef, defaults to undef
 
 If Action::Retry is about to sleep more than this number ( in milliseconds ),
-stop retrying.
+stop retrying. If set to undef, never stop retrying
 
 =cut
 

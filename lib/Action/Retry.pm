@@ -109,7 +109,7 @@ use Moo;
   ro, CodeRef, required
 
 The code to run to attempt doing the action. Will be evaluated taking care of
-the caller's context.
+the caller's context. It will receive parameters that were passed to C<run()>
 
 =cut
 
@@ -148,7 +148,8 @@ has retry_if_code => (
 
   ro, CodeRef, optional
 
-If given, the code to run when retries are given up.
+If given, the code to run when retries are given up. It will receive parameters
+that were passed to C<run()>
 
 =cut
 
@@ -263,7 +264,8 @@ results back to the caller.
 
 =back
 
-Arguments passed to C<run()> will be passed to C<attempt_code>.
+Arguments passed to C<run()> will be passed to C<attempt_code>. They will also
+passed to C<on_failure_code> as well if the case arises.
 
 =cut
 
@@ -302,7 +304,7 @@ sub run {
         if (! $self->strategy->needs_to_retry) {
             $self->strategy->reset;
             $self->has_on_failure_code
-              and return $self->on_failure_code->($@, @attempt_result);
+              and return $self->on_failure_code->(@_);
             return;
         }
 

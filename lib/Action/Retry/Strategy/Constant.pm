@@ -42,8 +42,8 @@ sub needs_to_retry { 1 }
 
   ro, Int|Undef, defaults to 10
 
-The number of times we should retry before giving up. If set to undef, will
-retry indefinitely
+The number of times we should retry before giving up. If set to undef, never
+stop retrying
 
 =cut
 
