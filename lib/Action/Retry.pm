@@ -30,14 +30,15 @@ use Moo;
 
 
 
-  # Same, but sleep time is doubling each time
+  # Same, but sleep time is doubling each time, and arguments passed to the
+  # attempted code
 
   # OO interface
   my $action = Action::Retry->new(
-    attempt_code => sub { ... },
+    attempt_code => sub { my ($num, $str) = @_; ... },
     strategy => 'Linear',
   );
-  $action->run();
+  $action->run(42, "foo");
 
   # functional interface
   retry { ... } strategy => 'Linear';
@@ -262,10 +263,12 @@ results back to the caller.
 
 =back
 
+Arguments passed to C<run()> will be passed to C<attempt_code>.
+
 =cut
 
 sub run {
-    my ($self) = @_;
+    my $self = shift;
 
     while(1) {
 
@@ -282,13 +285,13 @@ sub run {
         my @attempt_result;
           
         if (wantarray) {
-            @attempt_result = eval { $self->attempt_code->() };
+            @attempt_result = eval { $self->attempt_code->(@_) };
             $error = $@;
         } elsif ( ! defined wantarray ) {
-            eval { $self->attempt_code->() };
+            eval { $self->attempt_code->(@_) };
             $error = $@;
         } else {
-            my $scalar_result = eval { $self->attempt_code->() };
+            my $scalar_result = eval { $self->attempt_code->(@_) };
             $error = $@;
             @attempt_result = $scalar_result;
         }

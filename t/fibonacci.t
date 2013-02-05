@@ -8,12 +8,14 @@ use Test::Pretty;
 
 {
     my $var = 0;
+    my $acc = 0;
     my $action = Action::Retry->new(
-        attempt_code => sub { $var++; die "plop" },
+        attempt_code => sub { my ($val) = @_; $acc+=$val; $var++; die "plop" },
         strategy => { Fibonacci => { initial_term_index => 0, multiplicator => 10 } },
     );
-    $action->run();
+    $action->run(2);
     is($var, 11);
+    is($acc, 22);
 }
 
 {
