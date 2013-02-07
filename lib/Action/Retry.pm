@@ -285,21 +285,28 @@ sub run {
 
         my $error;
         my @attempt_result;
+        my $attempt_result;
+        my $wantarray;
           
         if (wantarray) {
+            $wantarray = 1;
             @attempt_result = eval { $self->attempt_code->(@_) };
             $error = $@;
         } elsif ( ! defined wantarray ) {
             eval { $self->attempt_code->(@_) };
             $error = $@;
         } else {
-            my $scalar_result = eval { $self->attempt_code->(@_) };
+            my $attempt_result = eval { $self->attempt_code->(@_) };
             $error = $@;
-            @attempt_result = $scalar_result;
         }
 
-        $self->retry_if_code->($error, @attempt_result)
-          or $self->strategy->reset, return @attempt_result;
+        if ($wantarray) {
+            $self->retry_if_code->($error, @attempt_result)
+              or $self->strategy->reset, return @attempt_result;
+        } else {
+            $self->retry_if_code->($error, $attempt_result)
+              or $self->strategy->reset, return $attempt_result;
+        }
 
         if (! $self->strategy->needs_to_retry) {
             $self->strategy->reset;
