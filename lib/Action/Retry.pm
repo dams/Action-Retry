@@ -65,7 +65,7 @@ use Moo;
   # OO way
   my $action = Action::Retry->new(
     attempt_code => sub { ... },
-    retry_if_code => sub { $_[0] =~ /Connection lost/ || $_[1] > 20 },
+    retry_if_code => sub { $_[0] =~ /Connection lost/ || $_[1]->{attempt_result} > 20 },
     strategy => { Fibonacci => { multiplicator => 2000,
                                  initial_term_index => 3,
                                  max_retries_number => 5,
@@ -173,8 +173,8 @@ Here is an example of code that gets the arguments properly:
     retry_if_code => sub {
       my ($error, $h) = @_;
 
-      my $attempt_code_result = $h->{attempt_code_result};
-      my $attempt_code_params = $h->{attempt_code_params};
+      my $attempt_code_result = $h->{attempt_result};
+      my $attempt_code_params = $h->{attempt_parameters};
 
       my @results = @$attempt_code_result;
       # will contains (2, 4);

@@ -1,4 +1,5 @@
 {{$NEXT}}
+  * fix doc
 
 0.19      2013-02-08 16:53:40 Europe/Paris
   * fixed wrong returned value when called in list context,
