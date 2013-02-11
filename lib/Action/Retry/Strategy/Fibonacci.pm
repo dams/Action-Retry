@@ -35,7 +35,6 @@ Term number of the Fibonacci sequence to start at. Defaults to 0
 has initial_term_index => (
     is => 'ro',
     lazy => 1,
-    init_arg => undef,
     default => sub { 0 },
 );
 
