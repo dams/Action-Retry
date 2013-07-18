@@ -1,13 +1,16 @@
-package Action::Retry::Strategy;
+
+# PODNAME: Action::Retry::Strategy
 
 # ABSTRACT: Srategy role that any Action::Retry strategy should consume
 
 use namespace::autoclean;
-use Moo::Role;
+use mop;
 
-requires 'needs_to_retry';
-requires 'compute_sleep_time';
-requires 'next_step';
-requires 'reset';
+role Action::Retry::Strategy {
+    method needs_to_retry;
+    method compute_sleep_time;
+    method next_step;
+    method reset;
+}
 
 1;

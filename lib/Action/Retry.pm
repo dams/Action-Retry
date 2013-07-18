@@ -1,6 +1,7 @@
-package Action::Retry;
 
 # ABSTRACT: Module to try to perform an action, with various ways of retrying and sleeping between retries.
+
+# PODNAME: Action::Retry
 
 use Module::Runtime qw(use_module);
 use Scalar::Util qw(blessed);
@@ -13,7 +14,9 @@ our @EXPORT_OK = qw(retry);
 our @EXPORT = ((caller())[1] eq '-e' ? @EXPORT_OK : ());
 
 use namespace::autoclean;
-use Moo;
+use mop;
+
+class Action::Retry {
 
 =head1 SYNOPSIS
 
@@ -113,11 +116,7 @@ the caller's context. It will receive parameters that were passed to C<run()>
 
 =cut
 
-has attempt_code => (
-    is => 'ro',
-    required => 1,
-    isa => sub { ref $_[0] eq 'CODE' },
-);
+has $attempt_code is ro;
 
 =attr retry_if_code
 
@@ -188,12 +187,7 @@ Here is an example of code that gets the arguments properly:
 
 =cut
 
-has retry_if_code => (
-    is => 'ro',
-    required => 1,
-    isa => sub { ref $_[0] eq 'CODE' },
-    default => sub { sub { $_[0] }; },
-);
+has $retry_if_code is ro;
 
 =attr on_failure_code
 
@@ -205,11 +199,12 @@ It will be given the same arguments as C<retry_if_code>. See C<retry_if_code> fo
 
 =cut
 
-has on_failure_code => (
-    is => 'ro',
-    isa => sub { ref $_[0] eq 'CODE' },
-    predicate => 1,
-);
+has $on_failure_code is ro;
+
+method has_on_failure_code {
+    # XXX not a real predicate
+    defined $on_failure_code;
+}
 
 =attr strategy
 
@@ -232,24 +227,23 @@ Defaults to C<'Constant'>
 
 =cut
 
-has strategy => (
-    is => 'ro',
-    defaults => sub { 'Constant' },
-    coerce => sub {
-        my $attr = $_[0];
-        blessed($attr)
-          and return $attr;
-        my $class_name = $attr;
-        my $constructor_params = {};
-        if (ref $attr eq 'HASH') {
-            $class_name = (keys %$attr)[0];
-            $constructor_params = $attr->{$class_name};
-        }
-        $class_name = $class_name =~ /^\+(.+)$/ ? $1 : "Action::Retry::Strategy::$class_name";
-        return use_module($class_name)->new($constructor_params);
-    },
-    isa => sub { $_[0]->does('Action::Retry::Strategy') or croak 'Should consume the Action::Retry::Strategy role' },
-);
+has $strategy = 'Constant';
+
+method strategy {
+    my $attr = $strategy;
+    blessed($attr)
+      and return $attr;
+    my $class_name = $attr;
+    my $constructor_params = {};
+    if (ref $attr eq 'HASH') {
+        $class_name = (keys %$attr)[0];
+        $constructor_params = $attr->{$class_name};
+    }
+    $class_name = $class_name =~ /^\+(.+)$/ ? $1 : "Action::Retry::Strategy::$class_name";
+    eval "use $class_name";
+    return $strategy = $class_name->new($constructor_params);
+#    return $strategy = use_module($class_name)->new($constructor_params);
+}
 
 =attr non_blocking
 
@@ -273,17 +267,10 @@ If you need a more advanced non blocking mode and callbacks, then look at L<AnyE
 
 =cut
 
-has non_blocking => (
-    is => 'ro',
-    default => sub { 0 },
-);
+has $non_blocking is ro = 0;
 
 # For non blocking mode, store the timestamp after which we can retry
-has _needs_sleeping_until => (
-    is => 'rw',
-    default => sub { 0 },
-    init_arg => undef,
-);
+has $_needs_sleeping_until is rw = 0;
 
 =method run
 
@@ -321,17 +308,16 @@ passed to C<on_failure_code> as well if the case arises.
 
 =cut
 
-sub run {
-    my $self = shift;
+method run {
 
     while(1) {
 
-        if (my $timestamp = $self->_needs_sleeping_until) {
+        if (my $timestamp = $_needs_sleeping_until) {
             # we can't retry until we have waited enough time 
             my ($seconds, $microseconds) = gettimeofday;
             $seconds * 1000 + int($microseconds / 1000) >= $timestamp
               or return;
-            $self->_needs_sleeping_until(0);
+            $_needs_sleeping_until = 0;
             $self->strategy->next_step;
         }
 
@@ -342,13 +328,13 @@ sub run {
           
         if (wantarray) {
             $wantarray = 1;
-            @attempt_result = eval { $self->attempt_code->(@_) };
+            @attempt_result = eval { $attempt_code->(@_) };
             $error = $@;
         } elsif ( ! defined wantarray ) {
-            eval { $self->attempt_code->(@_) };
+            eval { $attempt_code->(@_) };
             $error = $@;
         } else {
-            $attempt_result = eval { $self->attempt_code->(@_) };
+            $attempt_result = eval { $attempt_code->(@_) };
             $error = $@;
         }
 
@@ -358,19 +344,20 @@ sub run {
                 };
 
 
-        $self->retry_if_code->($error, $h )
+        $retry_if_code //= sub { $_[0] };
+        $retry_if_code->($error, $h )
           or $self->strategy->reset, return ( $wantarray ? @attempt_result : $attempt_result );
 
         if (! $self->strategy->needs_to_retry) {
             $self->strategy->reset;
             $self->has_on_failure_code
-              and return $self->on_failure_code->($error, $h);
+              and return $on_failure_code->($error, $h);
             return;
         }
 
         if ($self->non_blocking) {
             my ($seconds, $microseconds) = gettimeofday;
-            $self->_needs_sleeping_until($seconds * 1000 + int($microseconds / 1000) + $self->strategy->compute_sleep_time);
+            $_needs_sleeping_until = $seconds * 1000 + int($microseconds / 1000) + $self->strategy->compute_sleep_time;
         } else {
             usleep($self->strategy->compute_sleep_time * 1000);
             $self->strategy->next_step;
@@ -389,6 +376,8 @@ Is equivalent to
 A functional interface, alternative to the OO interface.
 
 =cut
+
+}
 
 sub retry (&;@) {
     my $code = shift;
