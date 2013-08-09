@@ -240,7 +240,8 @@ method strategy {
         $constructor_params = $attr->{$class_name};
     }
     $class_name = $class_name =~ /^\+(.+)$/ ? $1 : "Action::Retry::Strategy::$class_name";
-    eval "use $class_name";
+    eval "use $class_name; 1"
+      or die "error loading strategy '$class_name': '$@'";
     return $strategy = $class_name->new($constructor_params);
 #    return $strategy = use_module($class_name)->new($constructor_params);
 }

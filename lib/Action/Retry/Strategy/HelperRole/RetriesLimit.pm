@@ -12,6 +12,7 @@ sub modifier {
             if ( $type eq 'around' ) {
                 $meta->bind('after:COMPOSE' => sub {
                     my ($self, $other) = @_;
+                    use Data::Dumper;
                     if ($other->has_method( $method->name )) {
                         my $old_method = $other->remove_method( $method->name );
                         $other->add_method(
@@ -47,19 +48,22 @@ has $max_retries_number is ro = 10;
 has $_current_retries_number is rw = 0;
 
 method needs_to_retry is modifier('around') {
+    my $self = ${^SELF};
     defined $self->max_retries_number
       or return ${^NEXT}->(@_);
-    ${^NEXT}->(@_) && $_current_retries_number < $max_retries_number;
+    ${^NEXT}->(@_) && $self->_current_retries_number < $self->max_retries_number;
 }
 
 method next_step is modifier('around') {
+    my $self = ${^SELF};
     ${^NEXT}->(@_);
-    $_current_retries_number++;
+    $self->_current_retries_number($self->_current_retries_number + 1);
 }
 
 method reset is modifier('around') {
+    my $self = ${^SELF};
     ${^NEXT}->(@_);
-    $_current_retries_number = 0
+    $self->_current_retries_number(0);
 }
 
 }

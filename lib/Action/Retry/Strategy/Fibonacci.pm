@@ -1,11 +1,12 @@
-package Action::Retry::Strategy::Fibonacci;
 
 # ABSTRACT: Fibonacci incrementation of sleep time strategy
 
 use Math::Fibonacci qw(term);
 
 use namespace::autoclean;
-use Moo;
+use mop;
+
+class Action::Retry::Strategy::Fibonacci with Action::Retry::Strategy, Action::Retry::Strategy::HelperRole::RetriesLimit, Action::Retry::Strategy::HelperRole::SleepTimeout {
 
 =head1 SYNOPSIS
 
@@ -20,9 +21,6 @@ F(i-2) starting from 0,1. By default F(0) = 0, F(1) = 1, F(2) = 1, F(3) = 2
 
 =cut
 
-with 'Action::Retry::Strategy';
-with 'Action::Retry::Strategy::HelperRole::RetriesLimit';
-with 'Action::Retry::Strategy::HelperRole::SleepTimeout';
 
 =attr initial_term_index
 
@@ -32,21 +30,12 @@ Term number of the Fibonacci sequence to start at. Defaults to 0
 
 =cut
 
-has initial_term_index => (
-    is => 'ro',
-    lazy => 1,
-    default => sub { 0 },
-);
+has $initial_term_index is ro, lazy = 0;
 
 # the current sequence term index
-has _current_term_index => (
-    is => 'rw',
-    lazy => 1,
-    default => sub { $_[0]->initial_term_index },
-    init_arg => undef,
-    clearer => 1,
-);
+has $_current_term_index is rw, lazy = $_->initial_term_index;
 
+method _clear_current_term_index { ${^SELF}->_current_term_index(undef) }
 
 =attr multiplicator
 
@@ -57,31 +46,17 @@ value. Defaults to 1000 ( 1 second )
 
 =cut
 
-has multiplicator => (
-    is => 'ro',
-    lazy => 1,
-    default => sub { 1000 },
-);
+has $multiplicator is ro, lazy = 1000;
 
-sub reset {
-    my ($self) = @_;
-    $self->_clear_current_term_index;
-    return;
+method reset { ${^SELF}->_clear_current_term_index }
+
+method compute_sleep_time { term(${^SELF}->_current_term_index) * $multiplicator }
+
+method next_step {
+    ${^SELF}->_current_term_index(${^SELF}->_current_term_index() + 1 )
 }
 
-sub compute_sleep_time {
-    my ($self) = @_;
-#    print STDERR " -- sleep time is " . term($self->_current_term_index) * $self->multiplicator . "\n";
-    return term($self->_current_term_index) * $self->multiplicator;
-}
-
-sub next_step {
-    my ($self) = @_;
-    $self->_current_term_index($self->_current_term_index + 1);
-    return;
-}
-
-sub needs_to_retry { 1 }
+method needs_to_retry { 1 }
 
 # Inherited from Action::Retry::Strategy::HelperRole::RetriesLimit
 
@@ -103,5 +78,7 @@ If Action::Retry is about to sleep more than this number ( in milliseconds ),
 stop retrying. If set to undef, never stop retrying
 
 =cut
+
+}
 
 1;

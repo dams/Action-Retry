@@ -1,19 +1,16 @@
-package Action::Retry::Strategy::Linear;
 
 # ABSTRACT: Linear incrementation of sleep time strategy
 
 use namespace::autoclean;
-use Moo;
+use mop;
+
+class Action::Retry::Strategy::Linear with Action::Retry::Strategy, Action::Retry::Strategy::HelperRole::RetriesLimit, Action::Retry::Strategy::HelperRole::SleepTimeout {
 
 =head1 SYNOPSIS
 
 To be used as strategy in L<Action::Retry>
 
 =cut
-
-with 'Action::Retry::Strategy';
-with 'Action::Retry::Strategy::HelperRole::RetriesLimit';
-with 'Action::Retry::Strategy::HelperRole::SleepTimeout';
 
 =attr initial_sleep_time
 
@@ -23,20 +20,12 @@ The number of milliseconds to wait for the first retry
 
 =cut
 
-has initial_sleep_time => (
-    is => 'ro',
-    lazy => 1,
-    default => sub { 1000 },
-);
+has $initial_sleep_time is ro, lazy = 1000;
 
 # the current sleep time, as it's computed
-has _current_sleep_time => (
-    is => 'rw',
-    lazy => 1,
-    default => sub { $_[0]->initial_sleep_time },
-    init_arg => undef,
-    clearer => 1,
-);
+has $_current_sleep_time is rw, lazy = $_->initial_sleep_time;
+
+method _clear_current_sleep_time { undef $_current_sleep_time }
 
 =attr multiplicator
 
@@ -47,30 +36,20 @@ two retries will double. If set to 1, it'll remain constant. Defaults to 2
 
 =cut
 
-has multiplicator => (
-    is => 'ro',
-    lazy => 1,
-    default => sub { 2 },
-);
+has $multiplicator is ro, lazy = 2;
 
-sub reset {
-    my ($self) = @_;
-    $self->_clear_current_sleep_time;
-    return;
-}
+method reset {
+    my $self = ${^SELF};
+ $self->_clear_current_sleep_time }
 
-sub compute_sleep_time {
-    my ($self) = @_;
-    return $self->_current_sleep_time;
-}
+method compute_sleep_time { $self->_current_sleep_time }
 
-sub next_step {
-    my ($self) = @_;
+method next_step {
+    my $self = ${^SELF};
     $self->_current_sleep_time($self->_current_sleep_time * $self->multiplicator);
-    return;
 }
 
-sub needs_to_retry { 1 }
+method needs_to_retry { 1 }
 
 # Inherited from Action::Retry::Strategy::HelperRole::RetriesLimit
 
@@ -93,5 +72,7 @@ If Action::Retry is about to sleep more than this number ( in milliseconds ),
 stop retrying. If set to undef, never stop retrying.
 
 =cut
+
+}
 
 1;
