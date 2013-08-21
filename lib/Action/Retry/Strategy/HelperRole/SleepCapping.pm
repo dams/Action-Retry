@@ -47,8 +47,8 @@ has $capped_sleep_time is ro = undef;
 
 method compute_sleep_time is modifier('around') {
     return defined $capped_sleep_time
-      ? min(${^NEXT}->(@_), $capped_sleep_time)
-      : ${^NEXT}->(@_);
+      ? min($self->${^NEXT}(@_), $capped_sleep_time)
+      : $self->${^NEXT}(@_);
 
 }
 

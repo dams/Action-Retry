@@ -1,6 +1,8 @@
 
 # ABSTRACT: Linear incrementation of sleep time strategy
 
+# PODNAME: Action::Retry::Strategy::Linear
+
 use namespace::autoclean;
 use mop;
 
@@ -38,14 +40,11 @@ two retries will double. If set to 1, it'll remain constant. Defaults to 2
 
 has $multiplicator is ro, lazy = 2;
 
-method reset {
-    my $self = ${^SELF};
- $self->_clear_current_sleep_time }
+method reset { $self->_clear_current_sleep_time }
 
 method compute_sleep_time { $self->_current_sleep_time }
 
 method next_step {
-    my $self = ${^SELF};
     $self->_current_sleep_time($self->_current_sleep_time * $self->multiplicator);
 }
 

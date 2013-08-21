@@ -48,21 +48,18 @@ has $max_retries_number is ro = 10;
 has $_current_retries_number is rw = 0;
 
 method needs_to_retry is modifier('around') {
-    my $self = ${^SELF};
     defined $self->max_retries_number
-      or return ${^NEXT}->(@_);
-    ${^NEXT}->(@_) && $self->_current_retries_number < $self->max_retries_number;
+      or return $self->${^NEXT}(@_);
+    $self->${^NEXT}(@_) && $self->_current_retries_number < $self->max_retries_number;
 }
 
 method next_step is modifier('around') {
-    my $self = ${^SELF};
-    ${^NEXT}->(@_);
+    $self->${^NEXT}(@_);
     $self->_current_retries_number($self->_current_retries_number + 1);
 }
 
 method reset is modifier('around') {
-    my $self = ${^SELF};
-    ${^NEXT}->(@_);
+    $self->${^NEXT}(@_);
     $self->_current_retries_number(0);
 }
 

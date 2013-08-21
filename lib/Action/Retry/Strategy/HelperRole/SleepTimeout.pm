@@ -48,8 +48,8 @@ has $max_sleep_time is ro = undef;
 
 method needs_to_retry is modifier('around') {
     defined $self->max_sleep_time
-      or return ${^NEXT}->(@_);
-    ${^NEXT}->(@_) && $self->compute_sleep_time < $max_sleep_time
+      or return $self->${^NEXT}(@_);
+    $self->${^NEXT}(@_) && $self->compute_sleep_time < $max_sleep_time
 };
 
 }
