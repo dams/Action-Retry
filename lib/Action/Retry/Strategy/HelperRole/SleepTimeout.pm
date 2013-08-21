@@ -3,6 +3,8 @@
 
 # ABSTRACT: Helper to be consumed by Action::Retry Strategies, to enable giving up retrying when the sleep_time is too big
 
+package Action::Retry::Strategy::HelperRole::SleepTimeout;
+
 use namespace::autoclean;
 use mop;
 

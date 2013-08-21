@@ -1,6 +1,8 @@
 # PODNAME: Action::Retry::Strategy::Constant
 # ABSTRACT: Constant sleep time strategy
 
+package Action::Retry::Strategy::Constant;
+
 use mop;
 
 class Action::Retry::Strategy::Constant with Action::Retry::Strategy, Action::Retry::Strategy::HelperRole::RetriesLimit {

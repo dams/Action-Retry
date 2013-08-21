@@ -3,6 +3,8 @@
 
 # PODNAME: Action::Retry::Strategy::Fibonacci
 
+package Action::Retry::Strategy::Fibonacci;
+
 use Math::Fibonacci qw(term);
 
 use namespace::autoclean;
@@ -55,7 +57,7 @@ method reset { $self->_clear_current_term_index }
 method compute_sleep_time { term($self->_current_term_index) * $multiplicator }
 
 method next_step {
-    ${^SELF}->_current_term_index($self->_current_term_index() + 1 )
+    $self->_current_term_index($self->_current_term_index() + 1 )
 }
 
 method needs_to_retry { 1 }

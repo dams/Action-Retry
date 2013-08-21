@@ -2,6 +2,8 @@
 
 # ABSTRACT: Helper to be consumed by Action::Retry Strategies, to enable capping the sleep time
 
+package Action::Retry::Strategy::HelperRole::SleepCapping;
+
 use mop;
 use List::Util qw(min);
 

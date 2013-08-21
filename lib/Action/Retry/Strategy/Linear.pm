@@ -2,6 +2,7 @@
 # ABSTRACT: Linear incrementation of sleep time strategy
 
 # PODNAME: Action::Retry::Strategy::Linear
+package Action::Retry::Strategy::Linear;
 
 use namespace::autoclean;
 use mop;

@@ -3,6 +3,8 @@
 
 # PODNAME: Action::Retry
 
+package Action::Retry;
+
 use Module::Runtime qw(use_module);
 use Scalar::Util qw(blessed);
 use Time::HiRes qw(usleep gettimeofday);
@@ -13,7 +15,6 @@ our @EXPORT_OK = qw(retry);
 # export by default if run from command line
 our @EXPORT = ((caller())[1] eq '-e' ? @EXPORT_OK : ());
 
-use namespace::autoclean;
 use mop;
 
 class Action::Retry {

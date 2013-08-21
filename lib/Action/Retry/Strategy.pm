@@ -3,6 +3,8 @@
 
 # ABSTRACT: Srategy role that any Action::Retry strategy should consume
 
+package Action::Retry::Strategy;
+
 use namespace::autoclean;
 use mop;
 
