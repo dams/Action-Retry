@@ -5,19 +5,34 @@
 
 package Action::Retry;
 
-use Module::Runtime qw(use_module);
-use Scalar::Util qw(blessed);
-use Time::HiRes qw(usleep gettimeofday);
-use Carp;
+use strict;
+use warnings;
 
 use base 'Exporter';
 our @EXPORT_OK = qw(retry);
 # export by default if run from command line
 our @EXPORT = ((caller())[1] eq '-e' ? @EXPORT_OK : ());
 
+
+use Carp;
+
+sub retry (&;@) {
+    my $code = shift;
+    @_ % 2
+      and croak "arguments to retry must be a CodeRef, and an even number of key / values";
+    my %args = @_;
+    Action::Retry->new( attempt_code => $code, %args )->run();
+}
+
+
 use mop;
 
 class Action::Retry {
+
+use Carp;
+use Module::Runtime qw(use_module);
+use Scalar::Util qw(blessed);
+use Time::HiRes qw(usleep gettimeofday);
 
 =head1 SYNOPSIS
 
@@ -241,10 +256,9 @@ method strategy {
         $constructor_params = $attr->{$class_name};
     }
     $class_name = $class_name =~ /^\+(.+)$/ ? $1 : "Action::Retry::Strategy::$class_name";
-    eval "use $class_name; 1"
-      or die "error loading strategy '$class_name': '$@'";
+    use_module($class_name)
+      or croak "error loading strategy '$class_name': '$@'";
     return $strategy = $class_name->new($constructor_params);
-#    return $strategy = use_module($class_name)->new($constructor_params);
 }
 
 =attr non_blocking
@@ -381,13 +395,6 @@ A functional interface, alternative to the OO interface.
 
 }
 
-sub retry (&;@) {
-    my $code = shift;
-    @_ % 2
-      and croak "arguments to retry must be a CodeRef, and an even number of key / values";
-    my %args = @_;
-    Action::Retry->new( attempt_code => $code, %args )->run();
-}
 
 =head1 SRATEGIES
 

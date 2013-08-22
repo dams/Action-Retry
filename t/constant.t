@@ -6,6 +6,7 @@ use warnings;
 use Test::Most;
 use Test::Pretty;
 
+
 {
     my $var = 0;
     my $action = Action::Retry->new(
@@ -18,7 +19,7 @@ use Test::Pretty;
 
 {
     my $var = 0;
-    retry { $var++; die "plop" } strategy => { Constant => { sleep_time => 100 } };
+    Action::Retry::retry { $var++; die "plop" } strategy => { Constant => { sleep_time => 100 } };
     is($var, 11);    
 }
 
