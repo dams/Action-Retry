@@ -14,11 +14,17 @@ WriteMakefile1(
 
     BUILD_REQUIRES => {
         'Test::More' => '0.92',
+        'Test::Pretty' => '0',
     },
 
     PREREQ_PM => {
-        'Math::NumSeq::Fibonacci' => '55',
-    },
+                  Math::Fibonacci => '0'
+                  Moo => '0'
+                  Time::HiRes => '0'
+                  Module::Runtime => '0'
+                  Scalar::Util => '0'
+                  namespace::autoclean => '0'
+                 },
 
     test => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},
 );
