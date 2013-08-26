@@ -18,7 +18,7 @@ use Test::Pretty;
 
 {
     my $var = 0;
-    Action::Retry::retry { $var++; die "plop" } strategy => { Linear => { initial_sleep_time => 0 } };
+    retry { $var++; die "plop" } strategy => { Linear => { initial_sleep_time => 0 } };
     is($var, 11);
 }
 

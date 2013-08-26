@@ -3,27 +3,9 @@
 
 # PODNAME: Action::Retry
 
-package Action::Retry;
 
 use strict;
 use warnings;
-
-use base 'Exporter';
-our @EXPORT_OK = qw(retry);
-# export by default if run from command line
-our @EXPORT = ((caller())[1] eq '-e' ? @EXPORT_OK : ());
-
-
-use Carp;
-
-sub retry (&;@) {
-    my $code = shift;
-    @_ % 2
-      and croak "arguments to retry must be a CodeRef, and an even number of key / values";
-    my %args = @_;
-    Action::Retry->new( attempt_code => $code, %args )->run();
-}
-
 
 use mop;
 
@@ -381,6 +363,10 @@ method run {
     }
 }
 
+
+}
+
+
 =method retry
 
   retry { ..code.. } some => 'arguments';
@@ -393,6 +379,21 @@ A functional interface, alternative to the OO interface.
 
 =cut
 
+package Action::Retry;
+
+use Exporter qw(import);
+our @EXPORT_OK = qw(retry);
+# export by default if run from command line
+our @EXPORT = ((caller())[1] eq '-e' ? @EXPORT_OK : ());
+
+use Carp;
+
+sub retry (&;@) {
+    my $code = shift;
+    @_ % 2
+      and croak "arguments to retry must be a CodeRef, and an even number of key / values";
+    my %args = @_;
+    Action::Retry->new( attempt_code => $code, %args )->run();
 }
 
 

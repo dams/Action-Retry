@@ -19,7 +19,9 @@ use Test::Pretty;
 
 {
     my $var = 0;
-    Action::Retry::retry { $var++; die "plop" } strategy => { Constant => { sleep_time => 100 } };
+    retry {
+        $var++; die "plop"
+    } strategy => { Constant => { sleep_time => 100 } };
     is($var, 11);    
 }
 
