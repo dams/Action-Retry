@@ -4,7 +4,7 @@ WriteMakefile1(
     NAME         => 'Action::Retry',
     ABSTRACT     => "try something until it works",
     LICENSE      => 'perl',
-    VERSION_FROM => 'lib/Action/Retry.pm',
+    VERSION => 0.01,
     
     META_MERGE => {
         resources => {
@@ -18,12 +18,12 @@ WriteMakefile1(
     },
 
     PREREQ_PM => {
-                  Math::Fibonacci => '0'
-                  Moo => '0'
-                  Time::HiRes => '0'
-                  Module::Runtime => '0'
-                  Scalar::Util => '0'
-                  namespace::autoclean => '0'
+                  Math::Fibonacci => '0',
+                  Moo => '0',
+                  Time::HiRes => '0',
+                  Module::Runtime => '0',
+                  Scalar::Util => '0',
+                  namespace::autoclean => '0',
                  },
 
     test => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},
@@ -32,18 +32,16 @@ WriteMakefile1(
 sub WriteMakefile1 {  #Written by Alexandr Ciornii, version 0.21. Added by eumm-upgrade.
 
     print STDERR "
-WARNING ! This $0 file is provided just for lazy developers to
-quickly build this module directly from source, and hack it. However this
-module is managed by Dist::Zilla. Serious developers should install
-Dist::Zilla, and issue 'dist help' to see how to build and develop it properly.
-Especially, build/test/install requires are not properly set in this
-file.
+WARNING ! This $0 file is provided just for lazy developers to quickly build
+this module directly from source, and hack it. Its version will be wrong, and
+documentation won't be mangled, etc... This module is managed by Dist::Zilla.
+Serious developers should install Dist::Zilla, and issue 'dist help' to see how
+to build and develop it properly. Especially, build/test/install requires are
+not properly set in this file.
 
 Contact the author if you need more help (dams@cpan.org).
 
-Now sleeping 10 secs so you get bored and go install Dist::Zilla :)\n\n";
-
-    sleep 10;
+";
 
     my %params=@_;
     my $eumm_version=$ExtUtils::MakeMaker::VERSION;
