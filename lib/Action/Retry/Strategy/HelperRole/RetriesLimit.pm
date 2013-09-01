@@ -32,7 +32,7 @@ sub modifier {
             } elsif ( $type eq 'before' ) {
                 die "before not yet supported";
             } elsif ( $type eq 'after' ) {
-                die "after not yet supported";    
+                die "after not yet supported";
             } else {
                 die "I have no idea what to do with $type";
             }
@@ -44,10 +44,10 @@ sub modifier {
 
 role Action::Retry::Strategy::HelperRole::RetriesLimit {
 
-has $max_retries_number is ro = 10;
+has $!max_retries_number is ro = 10;
 
 # the current number of retries
-has $_current_retries_number is rw = 0;
+has $!_current_retries_number is rw = 0;
 
 method needs_to_retry is modifier('around') {
     defined $self->max_retries_number

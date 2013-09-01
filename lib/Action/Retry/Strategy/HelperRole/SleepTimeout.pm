@@ -34,7 +34,7 @@ sub modifier {
             } elsif ( $type eq 'before' ) {
                 die "before not yet supported";
             } elsif ( $type eq 'after' ) {
-                die "after not yet supported";    
+                die "after not yet supported";
             } else {
                 die "I have no idea what to do with $type";
             }
@@ -46,12 +46,12 @@ sub modifier {
 
 role Action::Retry::Strategy::HelperRole::SleepTimeout {
 
-has $max_sleep_time is ro = undef;
+has $!max_sleep_time is ro = undef;
 
 method needs_to_retry is modifier('around') {
     defined $self->max_sleep_time
       or return $self->${^NEXT}(@_);
-    $self->${^NEXT}(@_) && $self->compute_sleep_time < $max_sleep_time
+    $self->${^NEXT}(@_) && $self->compute_sleep_time < $!max_sleep_time
 };
 
 }

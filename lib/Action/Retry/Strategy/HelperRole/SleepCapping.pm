@@ -33,7 +33,7 @@ sub modifier {
             } elsif ( $type eq 'before' ) {
                 die "before not yet supported";
             } elsif ( $type eq 'after' ) {
-                die "after not yet supported";    
+                die "after not yet supported";
             } else {
                 die "I have no idea what to do with $type";
             }
@@ -45,11 +45,11 @@ sub modifier {
 
 role Action::Retry::Strategy::HelperRole::SleepCapping {
 
-has $capped_sleep_time is ro = undef;
+has $!capped_sleep_time is ro = undef;
 
 method compute_sleep_time is modifier('around') {
-    return defined $capped_sleep_time
-      ? min($self->${^NEXT}(@_), $capped_sleep_time)
+    return defined $!capped_sleep_time
+      ? min($self->${^NEXT}(@_), $!capped_sleep_time)
       : $self->${^NEXT}(@_);
 
 }
