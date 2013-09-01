@@ -23,12 +23,12 @@ The number of milliseconds to wait for the first retry
 
 =cut
 
-has $initial_sleep_time is ro, lazy = 1000;
+has $!initial_sleep_time is ro, lazy = 1000;
 
 # the current sleep time, as it's computed
-has $_current_sleep_time is rw, lazy = $_->initial_sleep_time;
+has $!_current_sleep_time is rw, lazy = $_->initial_sleep_time;
 
-method _clear_current_sleep_time { undef $_current_sleep_time }
+method _clear_current_sleep_time { undef $!_current_sleep_time }
 
 =attr multiplicator
 
@@ -39,7 +39,7 @@ two retries will double. If set to 1, it'll remain constant. Defaults to 2
 
 =cut
 
-has $multiplicator is ro, lazy = 2;
+has $!multiplicator is ro, lazy = 2;
 
 method reset { $self->_clear_current_sleep_time }
 

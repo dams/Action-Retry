@@ -34,10 +34,10 @@ Term number of the Fibonacci sequence to start at. Defaults to 0
 
 =cut
 
-has $initial_term_index is ro, lazy = 0;
+has $!initial_term_index is ro, lazy = 0;
 
 # the current sequence term index
-has $_current_term_index is rw, lazy = $_->initial_term_index;
+has $!_current_term_index is rw, lazy = $_->initial_term_index;
 
 method _clear_current_term_index { $self->_current_term_index(undef) }
 
@@ -50,11 +50,11 @@ value. Defaults to 1000 ( 1 second )
 
 =cut
 
-has $multiplicator is ro, lazy = 1000;
+has $!multiplicator is ro, lazy = 1000;
 
 method reset { $self->_clear_current_term_index }
 
-method compute_sleep_time { term($self->_current_term_index) * $multiplicator }
+method compute_sleep_time { term($self->_current_term_index) * $!multiplicator }
 
 method next_step {
     $self->_current_term_index($self->_current_term_index() + 1 )

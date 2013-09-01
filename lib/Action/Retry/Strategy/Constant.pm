@@ -22,9 +22,9 @@ The number of milliseconds to wait between retries
 
 =cut
 
-has $sleep_time is ro = 1000;
+has $!sleep_time is ro = 1000;
 
-method compute_sleep_time { $sleep_time }
+method compute_sleep_time { $!sleep_time }
 
 method reset { return }
 
