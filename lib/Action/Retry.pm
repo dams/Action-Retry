@@ -359,7 +359,7 @@ sub run {
 
 
         $self->retry_if_code->($error, $h )
-          or $self->strategy->reset, return ( $wantarray ? @attempt_result : $attempt_result );
+          or $self->strategy->reset, $@ = $error, return ( $wantarray ? @attempt_result : $attempt_result );
 
         if (! $self->strategy->needs_to_retry) {
             $self->strategy->reset;
