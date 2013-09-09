@@ -341,10 +341,9 @@ method run {
                   attempt_parameters => \@_,
                 };
 
-
         $!retry_if_code //= sub { $_[0] };
         $!retry_if_code->($error, $h )
-          or $self->strategy->reset, return ( $wantarray ? @attempt_result : $attempt_result );
+          or $self->strategy->reset, $@ = $error, return ( $wantarray ? @attempt_result : $attempt_result );
 
         if (! $self->strategy->needs_to_retry) {
             $self->strategy->reset;
