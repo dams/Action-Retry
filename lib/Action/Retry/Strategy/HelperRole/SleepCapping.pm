@@ -6,6 +6,7 @@ package Action::Retry::Strategy::HelperRole::SleepCapping;
 
 use mop;
 use List::Util qw(min);
+use 5.016;
 
 sub modifier {
     if ($_[0]->isa('mop::method')) {
@@ -16,6 +17,8 @@ sub modifier {
             if ( $type eq 'around' ) {
                 $meta->bind('after:COMPOSE' => sub {
                     my ($self, $other) = @_;
+                    return $other->bind('after:COMPOSE' => __SUB__)
+                        unless $other->isa('mop::class');
                     if ($other->has_method( $method->name )) {
                         my $old_method = $other->remove_method( $method->name );
                         $other->add_method(
