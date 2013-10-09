@@ -4,7 +4,6 @@
 # PODNAME: Action::Retry::Strategy::Linear
 package Action::Retry::Strategy::Linear;
 
-use namespace::autoclean;
 use mop;
 
 class Action::Retry::Strategy::Linear with Action::Retry::Strategy, Action::Retry::Strategy::HelperRole::RetriesLimit, Action::Retry::Strategy::HelperRole::SleepTimeout {

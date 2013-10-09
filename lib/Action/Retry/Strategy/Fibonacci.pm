@@ -7,7 +7,6 @@ package Action::Retry::Strategy::Fibonacci;
 
 use Math::Fibonacci qw(term);
 
-use namespace::autoclean;
 use mop;
 
 class Action::Retry::Strategy::Fibonacci with Action::Retry::Strategy, Action::Retry::Strategy::HelperRole::RetriesLimit, Action::Retry::Strategy::HelperRole::SleepTimeout {

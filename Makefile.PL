@@ -23,7 +23,6 @@ WriteMakefile1(
                   Time::HiRes => '0',
                   Module::Runtime => '0',
                   Scalar::Util => '0',
-                  namespace::autoclean => '0',
                  },
 
     test => {TESTS => join( ' ', (glob( 't/*.t'), glob('t/*/*.t')))},

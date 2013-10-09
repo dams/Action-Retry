@@ -5,7 +5,6 @@
 
 package Action::Retry::Strategy::HelperRole::SleepTimeout;
 
-use namespace::autoclean;
 use mop;
 use 5.016;
 
