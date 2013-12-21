@@ -12,7 +12,6 @@ our @EXPORT_OK = qw(retry);
 # export by default if run from command line
 our @EXPORT = ((caller())[1] eq '-e' ? @EXPORT_OK : ());
 
-use namespace::autoclean;
 use Moo;
 
 =head1 SYNOPSIS
