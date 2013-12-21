@@ -1,5 +1,8 @@
 {{$NEXT}}
 
+0.22      2013-12-21 23:46:15 Europe/Amsterdam
+  * don't depend on Test::Most, Test::Pretty and namespace::autoclean
+
 0.21      2013-02-11 11:47:44 Europe/Paris
   * fix initial_term_index, plus test
 
