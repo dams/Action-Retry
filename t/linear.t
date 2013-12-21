@@ -3,8 +3,7 @@ use Action::Retry qw(retry);
 use strict;
 use warnings;
 
-use Test::Most;
-use Test::Pretty;
+use Test::More;
 
 {
    my $var = 0;

@@ -3,8 +3,7 @@ use Action::Retry;
 use strict;
 use warnings;
 
-use Test::Most;
-use Test::Pretty;
+use Test::More;
 
 use Time::HiRes qw(gettimeofday usleep);
 
