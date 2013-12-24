@@ -2,7 +2,6 @@ package Action::Retry::Strategy::Constant;
 
 # ABSTRACT: Constant sleep time strategy
 
-use namespace::autoclean;
 use Moo;
 
 =head1 SYNOPSIS

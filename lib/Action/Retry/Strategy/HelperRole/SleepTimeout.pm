@@ -2,7 +2,6 @@ package Action::Retry::Strategy::HelperRole::SleepTimeout;
 
 # ABSTRACT: Helper to be consumed by Action::Retry Strategies, to enable giving up retrying when the sleep_time is too big
 
-use namespace::autoclean;
 use Moo::Role;
 
 has max_sleep_time => (

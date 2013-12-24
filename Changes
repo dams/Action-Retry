@@ -1,4 +1,5 @@
 {{$NEXT}}
+  * *really* don't depend on namespace::autoclean, duh...
 
 0.22      2013-12-21 23:46:15 Europe/Amsterdam
   * don't depend on Test::Most, Test::Pretty and namespace::autoclean

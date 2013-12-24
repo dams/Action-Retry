@@ -4,7 +4,6 @@ package Action::Retry::Strategy::Fibonacci;
 
 use Math::Fibonacci qw(term);
 
-use namespace::autoclean;
 use Moo;
 
 =head1 SYNOPSIS

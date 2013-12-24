@@ -2,7 +2,6 @@ package Action::Retry::Strategy::HelperRole::RetriesLimit;
 
 # ABSTRACT: Helper to be consumed by Action::Retry Strategies, to enable giving up retrying after a number of retries
 
-use namespace::autoclean;
 use Moo::Role;
 
 has max_retries_number => (
