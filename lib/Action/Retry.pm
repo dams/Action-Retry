@@ -233,7 +233,7 @@ Defaults to C<'Constant'>
 
 has strategy => (
     is => 'ro',
-    defaults => sub { 'Constant' },
+    default => sub { 'Constant' },
     coerce => sub {
         my $attr = $_[0];
         blessed($attr)
