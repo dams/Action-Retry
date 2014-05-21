@@ -1,5 +1,9 @@
 {{$NEXT}}
 
+0.24      2014-05-21 15:53:27 Europe/Amsterdam
+
+  * fix typo
+
 0.23      2013-12-24 02:06:03 Europe/Paris
   * *really* don't depend on namespace::autoclean, duh...
 
